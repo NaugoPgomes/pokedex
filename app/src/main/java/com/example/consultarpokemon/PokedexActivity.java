@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.consultarpokemon.Adapter.Adapter;
 import com.example.consultarpokemon.Model.pokemonAnswer;
@@ -54,33 +58,57 @@ public class PokedexActivity extends AppCompatActivity
     private void getData()
     {
 
-        Get service = retrofit.create(Get.class);
-
-        Call<pokemonAnswer> pokemonAnswerCall = service.getPokemonList();
-
-        pokemonAnswerCall.enqueue(new Callback<pokemonAnswer>()
+        if(isConnectedToTheInternet() == true)
         {
-            @Override
-            public void onResponse(Call<pokemonAnswer> call, Response<pokemonAnswer> response)
+            Get service = retrofit.create(Get.class);
+
+            Call<pokemonAnswer> pokemonAnswerCall = service.getPokemonList();
+
+            pokemonAnswerCall.enqueue(new Callback<pokemonAnswer>()
             {
-
-                if(response.isSuccessful())
+                @Override
+                public void onResponse(Call<pokemonAnswer> call, Response<pokemonAnswer> response)
                 {
-                    pokemonAnswer answer = response.body();
 
-                    ArrayList<pokemonModel> pokemonList = answer.getResults();
+                    if(response.isSuccessful())
+                    {
+                        pokemonAnswer answer = response.body();
 
-                    adapter.addPokemonList(pokemonList);
+                        ArrayList<pokemonModel> pokemonList = answer.getResults();
+
+                        adapter.addPokemonList(pokemonList);
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<pokemonAnswer> call, Throwable t)
+                {
 
-            @Override
-            public void onFailure(Call<pokemonAnswer> call, Throwable t)
-            {
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(this, "O Dispositivo não está conectado na Internet.", Toast.LENGTH_SHORT).show();
+        }
 
-            }
-        });
+
+    }
+
+    private Boolean isConnectedToTheInternet()
+    {
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+
+        if(netInfo == null)
+        {
+            return false;
+        }
+
+        return true;
 
     }
 

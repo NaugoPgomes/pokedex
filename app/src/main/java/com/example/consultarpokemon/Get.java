@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 
 public interface Get
 {
-    @GET("pokemon")
+    @GET("pokemon/?limit=151&offset=0")
     Call<pokemonAnswer> getPokemonList();
 }
