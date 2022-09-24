@@ -1,4 +1,4 @@
-package com.example.consultarpokemon;
+package com.example.consultarpokemon.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.example.consultarpokemon.Adapter.Adapter;
 import com.example.consultarpokemon.Model.pokemonAnswer;
 import com.example.consultarpokemon.Model.pokemonModel;
+import com.example.consultarpokemon.R;
+import com.example.consultarpokemon.Retrofit.Get;
+import com.example.consultarpokemon.Retrofit.RetrofitInstance;
 
 import java.util.ArrayList;
 
@@ -20,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class PokedexActivity extends AppCompatActivity
 {
@@ -30,6 +33,7 @@ public class PokedexActivity extends AppCompatActivity
     private Adapter adapter;
 
     private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,12 +50,9 @@ public class PokedexActivity extends AppCompatActivity
         final GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://pokeapi.co/api/v2/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
         getData();
+
 
     }
 
@@ -60,7 +61,10 @@ public class PokedexActivity extends AppCompatActivity
 
         if(isConnectedToTheInternet() == true)
         {
-            Get service = retrofit.create(Get.class);
+
+            RetrofitInstance instance = new RetrofitInstance();
+
+            Get service = instance.getInstancia("https://pokeapi.co/api/v2/").create(Get.class);
 
             Call<pokemonAnswer> pokemonAnswerCall = service.getPokemonList();
 
@@ -111,5 +115,7 @@ public class PokedexActivity extends AppCompatActivity
         return true;
 
     }
+
+
 
 }

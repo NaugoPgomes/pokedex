@@ -1,4 +1,4 @@
-package com.example.consultarpokemon;
+package com.example.consultarpokemon.Retrofit;
 
 import com.example.consultarpokemon.Model.pokemonAnswer;
 
